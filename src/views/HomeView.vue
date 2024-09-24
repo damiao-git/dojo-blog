@@ -1,43 +1,23 @@
 <template>
   <div class="home">
     <h1>home</h1>
-    <input type="text" v-model="search">
-    <p>search term - {{ search }}</p>
-    <div v-for="name in matchingNames" :key="name">
-      {{ name }}
-    </div>
-    <button @click="handleClick">stop watching</button>
+    <PostList :posts="posts"/>
   </div>
 </template>
 
 <script>
-import { computed, ref, watch, watchEffect } from 'vue';
+import PostList from '@/components/PostList.vue';
+import { ref } from 'vue';
 
 export default {
   name: 'HomeView',
+  components: {PostList},
   setup() {
-    const search = ref('')
-    const names = ref(['mario', 'yoshi', 'luigi', 'toad', 'bowser', 'koopa', 'peach'])
-
-    const stopWatch = watch(search, () => {
-      console.log('watch function ran');
-    })
-
-    const stopEffect = watchEffect(()=> {
-      console.log('watchEffect function ran', search.value);
-      
-    })
-
-    const handleClick = () => {
-      stopWatch()
-      stopEffect()
-    }
-    const matchingNames = computed(() => {
-      return names.value.filter((name) => name.includes(search.value))
-      // essa função faz um filtro dentro dos valores da const names, esse filtro vai buscar dentro de names, tudo que tiver a ver com o valor digitado
-      // dentro da const search, que está atribuida a um input type text
-    })
-    return { names, search, matchingNames, handleClick }
+    const posts = ref([
+      {title: 'welcome to the blog', body: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officiis consequuntur unde ipsam placeat quibusdam cupiditate molestias vitae culpa dolores commodi, accusamus quas laboriosam, sint nam optio laudantium repellendus deserunt mollitia assumenda molestiae harum obcaecati? Totam officiis labore aspernatur dignissimos porro architecto fugiat earum? Autem porro, repudiandae repellendus eius sequi fugiat tempora culpa velit esse vitae debitis voluptates. Provident deleniti sed doloribus laboriosam delectus temporibus, dolorum ratione, iusto iure voluptate officia! Voluptates earum, sequi quidem nostrum magnam ut dolor necessitatibus dolores, ipsa est repellat voluptate tenetur numquam consequatur voluptas. Architecto molestias sint suscipit illum sed adipisci eligendi dolores id! Doloremque, aut!', id: 1},
+      {title: 'top 5 CSS tips', body: 'Lorem ipsum', id: 2},
+    ])
+    return { posts }
   }
 }
 </script>
