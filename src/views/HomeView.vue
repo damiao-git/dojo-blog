@@ -1,36 +1,43 @@
 <template>
   <div class="home">
-    <h1>home</h1> 
-    <h2>Refs</h2> 
-     <p>{{ ninjaOne.name }} - {{ ninjaOne.age }} - {{ nameOne }}</p>
-     <button @click="updateNinjaOne">Click me</button>
-    <h2>Reactive</h2> 
-     <p>{{ ninjaTwo.name }} - {{ ninjaTwo.age }} - {{ nameTwo }}</p>
-     <button @click="updateNinjaTwo">Click me</button>
+    <h1>home</h1>
+    <input type="text" v-model="search">
+    <p>search term - {{ search }}</p>
+    <div v-for="name in matchingNames" :key="name">
+      {{ name }}
+    </div>
+    <button @click="handleClick">stop watching</button>
   </div>
 </template>
 
 <script>
-import { ref, reactive } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
 
 export default {
   name: 'HomeView',
-  setup(){
-    const ninjaOne = ref({name: 'mario', age: 30})
-    const ninjaTwo = reactive({name: 'luigi', age: 40})
+  setup() {
+    const search = ref('')
+    const names = ref(['mario', 'yoshi', 'luigi', 'toad', 'bowser', 'koopa', 'peach'])
 
-    const nameOne = ref('mario')
-    const nameTwo = reactive('luigi')
-    
-    const updateNinjaOne = () => {
-      ninjaOne.value.age = 40
-    }
-    
-    const updateNinjaTwo = () => {
-      ninjaTwo.age = 45
-    }
+    const stopWatch = watch(search, () => {
+      console.log('watch function ran');
+    })
 
-    return { ninjaOne, updateNinjaOne, ninjaTwo, updateNinjaTwo, nameOne, nameTwo }
+    const stopEffect = watchEffect(()=> {
+      console.log('watchEffect function ran', search.value);
+      
+    })
+
+    const handleClick = () => {
+      stopWatch()
+      stopEffect()
+    }
+    const matchingNames = computed(() => {
+      return names.value.filter((name) => name.includes(search.value))
+      // essa função faz um filtro dentro dos valores da const names, esse filtro vai buscar dentro de names, tudo que tiver a ver com o valor digitado
+      // dentro da const search, que está atribuida a um input type text
+    })
+    return { names, search, matchingNames, handleClick }
   }
 }
 </script>
